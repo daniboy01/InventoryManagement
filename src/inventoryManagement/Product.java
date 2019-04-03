@@ -28,6 +28,7 @@ public class Product {
     }
 
     public Product(String barCode, String name, String category) {
+        this.ID = new SimpleStringProperty("");
         this.barCode = new SimpleStringProperty(barCode);
         this.name = new SimpleStringProperty(name);
         this.category = new SimpleStringProperty(category);

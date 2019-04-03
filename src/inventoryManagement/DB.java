@@ -41,9 +41,9 @@ public class DB {
         }
 
         try {
-            ResultSet rs = dbmd.getTables(null, "APP", "CONTACTS", null);
+            ResultSet rs = dbmd.getTables(null, "APP", "PRODUCTS", null);
             if (!rs.next()) {
-                createStatement.execute("create table contacts(id INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),lastname varchar(20), firstname varchar(20), email varchar(30))");
+                createStatement.execute("create table products(id INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),barCode varchar(20), name varchar(20), category varchar(30))");
             }
         } catch (SQLException ex) {
             System.out.println("Valami baj van az adattáblák létrehozásakor.");
@@ -52,29 +52,48 @@ public class DB {
     }
 
     public ArrayList<Product> getAllContacts() {
-        String sql = "select * from contacts";
-        ArrayList<Product> users = null;
+        String sql = "select * from products";
+        ArrayList<Product> products = null;
         try {
             ResultSet rs = createStatement.executeQuery(sql);
-            users = new ArrayList<>();
+            products = new ArrayList<>();
 
             while (rs.next()) {
                 Product actualProduct = new Product(rs.getInt("ID"), rs.getString("barCode"), rs.getString("name"), rs.getString("category"));
-                users.add(actualProduct);
+                products.add(actualProduct);
             }
         } catch (SQLException ex) {
-            System.out.println("Valami baj van a userek kiolvasásakor");
+            System.out.println("Valami baj van a termékek kiolvasásakor");
             System.out.println("" + ex);
         }
-        return users;
+        return products;
+    }
+
+    public ArrayList<Product> getProductByBarCode(String barCode) {
+        String sql = "select * from products where barCode =" + "'" + barCode + "'";
+        ArrayList<Product> products = null;
+        try {
+            ResultSet rs = createStatement.executeQuery(sql);
+            while (rs.next()) {
+                products = new ArrayList<>();
+                Product actualProduct = new Product(rs.getInt("ID"), rs.getString("barCode"), rs.getString("name"), rs.getString("category"));
+                products.add(actualProduct);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Valami baj van a termék kiolvasásakor");
+            System.out.println("" + ex);
+        }
+
+        return products;
     }
 
     public void addProduct(Product product){
         try {
-            String sql = "insert into contacts (lastname, firstname, email) values (?,?,?)";
+            String sql = "insert into products (barCode, name, category) values (?,?,?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, product.getName());
-            preparedStatement.setString(2, product.getCategory());
+            preparedStatement.setString(1, product.getBarCode());
+            preparedStatement.setString(2, product.getName());
+            preparedStatement.setString(3, product.getCategory());
             preparedStatement.execute();
         } catch (SQLException ex) {
             System.out.println("Valami baj van a termék hozzáadásakor");

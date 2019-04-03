@@ -7,7 +7,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="731.0" prefWidth="1099.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="inventoryManagement.Controller">
     <children>
-        <Pane prefHeight="731.0" prefWidth="320.0">
+        <Pane fx:id="pane1" prefHeight="731.0" prefWidth="1099.0" visible="false">
             <children>
                 <Label layoutX="23.0" layoutY="63.0" text="Vonalkód:">
                     <font>
@@ -21,15 +21,39 @@
                 </Label>
                 <TextField id="barCode" fx:id="barCode" layoutX="129.0" layoutY="58.0" />
                 <TextField id="productName" fx:id="productName" layoutX="129.0" layoutY="113.0" />
-                <Button id="addButton" fx:id="addButton" layoutX="94.0" layoutY="211.0" mnemonicParsing="false" text="Új termék hozzáadása" onAction="#addProduct"/>
+                <Button id="addButton" fx:id="addButton" layoutX="94.0" layoutY="211.0" mnemonicParsing="false" onAction="#addProduct" text="Új termék hozzáadása" />
             <Label layoutX="14.0" layoutY="160.0" text="Kategória:">
                <font>
                   <Font name="Arial Bold" size="12.0" />
                </font>
             </Label>
             <TextField id="category" fx:id="category" layoutX="129.0" layoutY="155.0" />
+            <Label layoutX="110.0" layoutY="14.0" text="Hozzáadás">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Button id="backToSearch" fx:id="backToSearch" layoutX="98.0" layoutY="481.0" mnemonicParsing="false" onAction="#toSearchPage" text="Keresés vonalkóddal" />
+              <TableView id="table" fx:id="table" layoutX="314.0" prefHeight="715.0" prefWidth="785.0" />
             </children>
         </Pane>
-        <TableView id="table" fx:id="table" layoutX="308.0" layoutY="7.0" prefHeight="715.0" prefWidth="785.0" />
+      <Pane fx:id="pane2" layoutX="10.0" layoutY="10.0" prefHeight="731.0" prefWidth="1091.0">
+         <children>
+            <Label layoutX="23.0" layoutY="63.0" text="Vonalkód:">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Label>
+            <TextField id="barCodeSearch" fx:id="barCodeSearch" layoutX="129.0" layoutY="58.0" />
+            <Button id="searchButton" fx:id="searchButton" layoutX="132.0" layoutY="137.0" mnemonicParsing="false" onAction="#getProductByBarCode" text="Keresés" />
+            <Label layoutX="110.0" layoutY="14.0" text="Hozzáadás">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Button id="backToAll" fx:id="backToAll" layoutX="83.0" layoutY="671.0" mnemonicParsing="false" onAction="#toAllProductPage" text="Vissza a összes termékhez" />
+            <TableView id="table2" fx:id="table2" layoutX="306.0" prefHeight="715.0" prefWidth="785.0" />
+         </children>
+      </Pane>
     </children>
 </AnchorPane>

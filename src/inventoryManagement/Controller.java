@@ -12,8 +12,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.Pane;
 
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -28,21 +31,65 @@ public class Controller implements Initializable {
     private Button addButton;
     @FXML
     private TableView table;
-    private final ObservableList data = FXCollections.observableArrayList();
+    @FXML
+    private TableView table2;
+    @FXML
+    private TextField barCodeSearch;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Pane pane1;
+    @FXML
+    private Pane pane2;
+    @FXML
+    private Button backToSearch;
+    @FXML
+    private Button backToAll;
+
+    private final ObservableList dataAll = FXCollections.observableArrayList();
+    private final ObservableList dataSearched = FXCollections.observableArrayList();
     DB db = new DB();
     //class variebles FXMLs ends here
 
-    //add new product to the DB
-    public void addProduct(ActionEvent event){
-        Product newProduct = new Product(barCode.getText(), productName.getText() ,category.getText());
-        data.add(newProduct);
-        db.addProduct(newProduct);
+    //navigate to search product page
+    public void toSearchPage(ActionEvent event) {
+        pane1.setVisible(false);
+        pane2.setVisible(true);
     }
 
+    //navigate to all product page
+    public void toAllProductPage(ActionEvent event) {
+        pane2.setVisible(false);
+        pane1.setVisible(true);
+    }
+
+    //add new product to the DB
+    public void addProduct(ActionEvent event) {
+        Product newProduct = new Product(barCode.getText(), productName.getText(), category.getText());
+        dataAll.add(newProduct);
+        db.addProduct(newProduct);
+        table.refresh();
+    }
+
+    //get Product by barCode
+    public void getProductByBarCode(ActionEvent event) {
+        String s = barCodeSearch.getText();
+        ArrayList<Product> products = db.getProductByBarCode(s);
+        dataSearched.removeAll();
+        dataSearched.addAll(products);
+        setTableData(products,table2,dataSearched);
+    }
+
+
     //make the columns and rows for the TableView according to Product model
-    public void setTableData() {
+    public void setTableData(ArrayList<Product> products, TableView tableView, ObservableList observableList) {
+        TableColumn idCol = new TableColumn("Sorszám");
+        idCol.setMaxWidth(100);
+        idCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        idCol.setCellValueFactory(new PropertyValueFactory<Product, String>("ID"));
+
         TableColumn barCodeCol = new TableColumn("Vonalkód");
-        barCodeCol.setMaxWidth(100);
+        barCodeCol.setMaxWidth(170);
         barCodeCol.setCellFactory(TextFieldTableCell.forTableColumn());
         barCodeCol.setCellValueFactory(new PropertyValueFactory<Product, String>("barCode"));
 
@@ -56,9 +103,10 @@ public class Controller implements Initializable {
         categoryCol.setCellFactory(TextFieldTableCell.forTableColumn());
         categoryCol.setCellValueFactory(new PropertyValueFactory<Product, String>("category"));
 
-        table.getColumns().addAll(barCodeCol, nameCol, categoryCol);
-        data.addAll(db.getAllContacts());
-        table.setItems(data);
+
+        tableView.getColumns().addAll(idCol, barCodeCol, nameCol, categoryCol);
+        observableList.addAll(products);
+        tableView.setItems(observableList);
 
 
     }
@@ -66,6 +114,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setTableData();
+        setTableData(db.getAllContacts(),table,dataAll);
     }
 }
